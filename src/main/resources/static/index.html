@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="./index.js" defer></script> <!-- "defer" script'in sayfa yüklenmeden hemen önce çalışmasını sağlar -->
+    <!-- Bootstrap CSS ekleme -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <title>Kinobilletter Bestilling</title>
+    <style>
+        body {
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+        .my-3 {
+            margin-top: 1rem !important;
+            margin-bottom: 1rem !important;
+        }
+        .header {
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .validation-error {
+            display: none; /* Başlangıçta hata mesajlarını gizle */
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2 class="header">Bestilling av kinobilletter</h2>
+    <form id="billettForm">
+
+        <div class="form-group">
+            <label for="filmNames">Velg film:</label>
+            <select class="form-control" name="filmNames" id="filmNames" required>
+                <option value="" disabled selected>Velg en film...</option>
+                <option value="Konvoi">Konvoi</option>
+                <option value="Paw Patrol">Paw Patrol</option>
+            </select>
+            <div id="filmAdv" class="invalid-feedback">Vennligst velg en film.</div>
+        </div>
+
+        <div class="form-group">
+            <label for="antall">Antall</label>
+            <input type="number" class="form-control" id="antall" name="antall" required />
+            <div id="antallAdv" class="invalid-feedback">Angi et antall.</div>
+        </div>
+
+        <div class="form-group">
+            <label for="fornavn">Fornavn</label>
+            <input type="text" class="form-control" id="fornavn" name="fornavn" required onchange="checkInput()" />
+            <div id="fornavnAdv" class="invalid-feedback">Vennligst skriv inn fornavn.</div>
+        </div>
+
+        <div class="form-group">
+            <label for="etternavn">Etternavn</label>
+            <input type="text" class="form-control" id="etternavn" name="etternavn" required />
+            <div id="etternavnAdv" class="invalid-feedback">Vennligst skriv inn etternavn.</div>
+        </div>
+
+        <div class="form-group">
+            <label for="telefonnr">Telefonnr</label>
+            <input type="text" class="form-control" id="telefonnr" name="telefonnr" required />
+            <div id="telAdv" class="invalid-feedback">Vennligst skriv inn et gyldig telefonnummer.</div>
+        </div>
+
+        <div class="form-group">
+            <label for="epost">Epost</label>
+            <input type="email" class="form-control" id="epost" name="epost" required />
+            <div id="epostAdv" class="invalid-feedback">Vennligst skriv inn en gyldig epostadresse.</div>
+        </div>
+
+        <button type="button" class="btn btn-primary my-3" id="kjopBillet" onclick="addBillett()">Kjøp billett</button>
+
+        <h3 class="my-3">Alle billetter</h3>
+        <div id="alleBilletter"></div>
+
+        <button type="button" class="btn btn-danger my-3" onclick="slettAlleBilletter()" id="slettBillet">Slett alle billettene</button>
+    </form>
+</div>
+</body>
+</html>

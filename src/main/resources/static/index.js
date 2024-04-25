@@ -7,7 +7,10 @@ document.addEventListener('DOMContentLoaded', function() {
     form.addEventListener('submit', function(event) {
         event.preventDefault();
         addBillett();
+
     });
+
+    listBilletter();
 });
 
 
@@ -25,6 +28,9 @@ function addBillett() {
 
         fetch('http://localhost:8080/tickets', {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify(billettData),
         })
             .then(response => {
@@ -41,16 +47,45 @@ function addBillett() {
                 console.error('Error:', error); // Hata durumunda eylemler
             });
 
-        resetForm(); // Formu sıfırla
+
+        // Add the ticket data to the 'billettList' array
+        billettListe.push({
+            id: billettListe.length + 1, // Assuming that the 'id' is an auto-incrementing integer
+            filmName: billettData.filmName,
+            quantity: billettData.quantity,
+            firstName: billettData.firstName,
+            lastName: billettData.lastName,
+            phoneNumber: billettData.phoneNumber,
+            email: billettData.email
+        });
+
+        // Call the 'listBilletter()' function to update the HTML content on the page
+        listBilletter();
+
+        resetForm();
     }
 }
 
-// Form resetleme işlevi
-function resetForm() {
-    document.getElementById('billettForm').reset();
+// Funksjon for å oppdatere og vise billettliste
+function listBilletter(liste) {
+
+    const alleBilletterDiv = document.getElementById('alleBilletter');
+    alleBilletterDiv.innerHTML = '';
+
+    liste.forEach(billet => {
+        const ticketDiv = document.createElement('div');
+        ticketDiv.innerHTML = `
+            <p>Film: ${billet.filmName}</p>
+            <p>Antall: ${billet.antall}</p>
+            <p>Fornavn: ${billet.fornavn}</p>
+            <p>Etternavn: ${billet.etternavn}</p>
+            <p>Telefonnr: ${billet.telefonnr}</p>
+            <p>Epost: ${billet.epost}</p>
+        `;
+        alleBilletterDiv.appendChild(ticketDiv);
+    });
 }
 
-// Input valideringer
 function checkInput() {
     let isValid = true;
 
@@ -117,7 +152,7 @@ function checkInput() {
     // Epost validation
     let epost = document.getElementById("epost").value;
     let epostAdv = document.getElementById("epostAdv");
-// regex for e post validering
+    // regex for e post validering
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(epost)) {
         epostAdv.innerText = "Vennligst skriv inn gyldig epost som feks.(bruker@gmail.no)";
@@ -142,17 +177,10 @@ function resetForm() {
     });
 }
 
-// Funksjon for å oppdatere og vise billettliste
-function listBilletter() {
-    let alleBilletterDiv = document.getElementById('alleBilletter');
-    alleBilletterDiv.innerHTML = ''; // Slett gjeldende liste
-    billettListe.forEach(function(billett) {
-        alleBilletterDiv.innerHTML += `<p>${billett.film} ${billett.antall} ${billett.fornavn} ${billett.etternavn} ${billett.telefonnr} ${billett.epost}</p>`;
-    });
-}
 
 // Funksjon for å slette alle billetter
 function slettAlleBilletter() {
     billettListe = [];
-    listBilletter();
+    listBilletter(billettListe);
 }
+

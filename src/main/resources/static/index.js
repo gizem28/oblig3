@@ -173,7 +173,7 @@ function displayTickets(tickets) {
     ticketListDiv.innerHTML = ''; // Mevcut içeriği temizle
 
     if (tickets.length === 0) {
-        ticketListDiv.innerHTML = '<p>Ingen billetter tilgjengelig.</p>'; // Bilet yoksa bu mesajı göster
+        ticketListDiv.innerHTML = '<p>Ingen billetter tilgjengelig.</p>';
     } else {
         tickets.forEach(ticket => {
             const ticketDiv = document.createElement('div');
@@ -188,17 +188,17 @@ function displayTickets(tickets) {
 }
 
 
-function deleteTicket(ticketId) {
-    fetch('http://localhost:8080/tickets/' + ticketId, {
+function deleteAllTickets() {
+    fetch('http://localhost:8080/tickets', {
         method: 'DELETE'
     })
         .then(response => {
             if (response.ok) {
-                console.log('Ticket deleted successfully');
-                fetchTickets(); // Listeyi yeniden çek
+                console.log('All tickets deleted successfully');
+                fetchTickets();
             }
         })
         .catch(error => {
-            console.error('Error deleting ticket:', error);
+            console.error('Error deleting all tickets:', error);
         });
 }

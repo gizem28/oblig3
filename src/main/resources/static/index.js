@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     });
 
-    listBilletter();
 });
 
 
@@ -41,7 +40,6 @@ function addBillett() {
             })
             .then(data => {
                 console.log('Success:', data); // Başarı durumunda eylemler
-                listBilletter(); // Ekranda biletleri listele
             })
             .catch((error) => {
                 console.error('Error:', error); // Hata durumunda eylemler
@@ -59,31 +57,9 @@ function addBillett() {
             email: billettData.email
         });
 
-        // Call the 'listBilletter()' function to update the HTML content on the page
-        listBilletter();
 
         resetForm();
     }
-}
-
-// Funksjon for å oppdatere og vise billettliste
-function listBilletter(liste) {
-
-    const alleBilletterDiv = document.getElementById('alleBilletter');
-    alleBilletterDiv.innerHTML = '';
-
-    liste.forEach(billet => {
-        const ticketDiv = document.createElement('div');
-        ticketDiv.innerHTML = `
-            <p>Film: ${billet.filmName}</p>
-            <p>Antall: ${billet.antall}</p>
-            <p>Fornavn: ${billet.fornavn}</p>
-            <p>Etternavn: ${billet.etternavn}</p>
-            <p>Telefonnr: ${billet.telefonnr}</p>
-            <p>Epost: ${billet.epost}</p>
-        `;
-        alleBilletterDiv.appendChild(ticketDiv);
-    });
 }
 
 function checkInput() {
@@ -177,10 +153,52 @@ function resetForm() {
     });
 }
 
+document.addEventListener('DOMContentLoaded', function() {
+    fetchTickets(); // Sayfa yüklenir yüklenmez biletleri çek
+});
 
-// Funksjon for å slette alle billetter
-function slettAlleBilletter() {
-    billettListe = [];
-    listBilletter(billettListe);
+function fetchTickets() {
+    fetch('http://localhost:8080/tickets') // Burada port ve URL yolunuzu doğrulayın
+        .then(response => response.json())
+        .then(data => {
+            displayTickets(data);
+        })
+        .catch(error => {
+            console.error('Error fetching tickets:', error);
+        });
 }
 
+function displayTickets(tickets) {
+    const ticketListDiv = document.getElementById('ticketList');
+    ticketListDiv.innerHTML = ''; // Mevcut içeriği temizle
+
+    if (tickets.length === 0) {
+        ticketListDiv.innerHTML = '<p>Ingen billetter tilgjengelig.</p>'; // Bilet yoksa bu mesajı göster
+    } else {
+        tickets.forEach(ticket => {
+            const ticketDiv = document.createElement('div');
+            ticketDiv.innerHTML = `
+                <h3>${ticket.filmName} - ${ticket.quantity} Billett(er)</h3>
+                <p>Kjøper: ${ticket.firstName} ${ticket.lastName}</p>
+                <p>Telefon: ${ticket.phoneNumber}, E-post: ${ticket.email}</p>
+            `;
+            ticketListDiv.appendChild(ticketDiv);
+        });
+    }
+}
+
+
+function deleteTicket(ticketId) {
+    fetch('http://localhost:8080/tickets/' + ticketId, {
+        method: 'DELETE'
+    })
+        .then(response => {
+            if (response.ok) {
+                console.log('Ticket deleted successfully');
+                fetchTickets(); // Listeyi yeniden çek
+            }
+        })
+        .catch(error => {
+            console.error('Error deleting ticket:', error);
+        });
+}
